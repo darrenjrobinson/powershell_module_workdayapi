@@ -12,6 +12,7 @@ FunctionsToExport = @(
         'Get-WorkdayToAdData',
         'Get-WorkdayReport',
         'Get-WorkdayWorker',
+		'Get-WorkdayWorkerAdv'
         'Get-WorkdayWorkerByIdLookupTable',
         'Invoke-WorkdayRequest',
         'Remove-WorkdayConfiguration',
