@@ -37,6 +37,8 @@ FunctionsToExport = @(
         'Set-WorkdayWorkerOtherId',
         'Update-WorkdayWorkerOtherId',
 
+        'Get-WorkdayWorkerProvData'
+
         'Get-WorkdayWorkerPhone',
 		'Set-WorkdayWorkerPhone',
         'Update-WorkdayWorkerPhone',

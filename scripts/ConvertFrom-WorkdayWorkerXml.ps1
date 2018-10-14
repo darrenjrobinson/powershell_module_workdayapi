@@ -25,6 +25,7 @@ function ConvertFrom-WorkdayWorkerXml {
             UserId                = $null
             NationalId            = $null
             OtherId               = $null
+            ProvisioningGroup     = $null 
             Phone                 = $null
             Email                 = $null
             BusinessTitle         = $null
@@ -62,12 +63,13 @@ function ConvertFrom-WorkdayWorkerXml {
                 $o.StartDate        = $x.GetElementsByTagName('wd:First_Day_of_Work').'#text'
                 $o.Active           = $x.GetElementsByTagName('wd:Active').'#text'
                 $o.EndDate          = $x.GetElementsByTagName('wd:Termination_Date').'#text'
-                
+                                
                 try{
                     if ($x.GetElementsByTagName('wd:Supplier_Reference').ID.'#text'[1]){
                         $o.Supplier         = $x.GetElementsByTagName('wd:Supplier_Reference').ID.'#text'[1] 
                     }
-                } catch { #ignore
+                } catch { 
+                #ignore 
                 }
                 $o.XML              = [XML]$x.OuterXml
 
@@ -75,7 +77,9 @@ function ConvertFrom-WorkdayWorkerXml {
                 $o.Email   = @(Get-WorkdayWorkerEmail -WorkerXml $x.OuterXml)
                 $o.NationalId = @(Get-WorkdayWorkerNationalId -WorkerXml $x.OuterXml)
                 $o.OtherId = @(Get-WorkdayWorkerOtherId -WorkerXml $x.OuterXml)
+                $o.ProvisioningGroup =@(Get-WorkdayWorkerProvData -WorkerXml $x.OuterXml)
                 $o.UserId  = $x.Worker_Data.User_ID
+
 
                 $workerJobData = $x.SelectSingleNode('//wd:Worker_Job_Data', $NM)
                 if ($workerJobData -ne $null) {
@@ -84,9 +88,7 @@ function ConvertFrom-WorkdayWorkerXml {
                     $o.Location = $workerJobData.SelectNodes('wd:Position_Data/wd:Business_Site_Summary_Data/wd:Location_Reference/wd:ID[@wd:type="Location_ID"]', $NM).InnerText
                     $o.WorkSpace = $workerJobData.SelectNodes('wd:Position_Data/wd:Work_Space__Reference/wd:ID[@wd:type="Location_ID"]', $NM).InnerText
                     $o.WorkerTypeReference = $workerJobData.SelectNodes('wd:Position_Data/wd:Worker_Type_Reference/wd:ID[@wd:type="Employee_Type_ID"]', $NM).InnerText
-                    #$o.Employer = $workerJobData.SelectNodes('wd:Organization_Data/wd:Worker_Organization_Data/wd:Organization_Reference/wd:ID[@wd:type="Organization_Reference_ID"]', $NM).'#text'
-                                    #$user.XML.Worker.Worker_Data.Organization_Data.Worker_Organization_Data.Organization_Reference.id.type
-                # $user.XML.Worker.Worker_Data.Organization_Data.Worker_Organization_Data.Organization_Reference
+                    
                     $o.Manager = $workerJobData.Position_Data.Manager_as_of_last_detected_manager_change_Reference.ID |
                         Where-Object {$_.type -ne 'WID'} |
                             Select-Object @{Name='WorkerType';Expression={$_.type}}, @{Name='WorkerID';Expression={$_.'#text'}}
