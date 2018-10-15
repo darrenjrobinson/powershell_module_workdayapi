@@ -116,6 +116,7 @@ Get-WorkdayWorkerAdv -WorkerType WID -IncludePersonal -FromDate '2018-07-23T16:3
     <bsvc:Include_Account_Provisioning>false</bsvc:Include_Account_Provisioning>
     <bsvc:Include_User_Account>false</bsvc:Include_User_Account>    
     <bsvc:Include_Worker_Documents>false</bsvc:Include_Worker_Documents>  
+    <bsvc:Include_Management_Chain_Data>false</bsvc:Include_Management_Chain_Data>      
   </bsvc:Response_Group>
 </bsvc:Get_Workers_Request>
 '@
@@ -144,6 +145,7 @@ Get-WorkdayWorkerAdv -WorkerType WID -IncludePersonal -FromDate '2018-07-23T16:3
             $request.Get_Workers_Request.Response_Group.Include_Organizations = 'true'
             $request.Get_Workers_Request.Response_Group.Include_Roles = 'true'
             $request.Get_Workers_Request.Response_Group.Include_Account_Provisioning ='true'
+            $request.Get_Workers_Request.Response_Group.Include_Management_Chain_Data ='true'
         }
 
         if ($IncludeDocuments) {

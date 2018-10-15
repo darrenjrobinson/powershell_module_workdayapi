@@ -35,6 +35,7 @@ function ConvertFrom-WorkdayWorkerXml {
             WorkSpace             = $null
             WorkerTypeReference   = $null
             Manager               = $null
+            MgmtData              = $null
             HireDate              = $null
             StartDate             = $null
             Active                = $null
@@ -77,7 +78,8 @@ function ConvertFrom-WorkdayWorkerXml {
                 $o.Email   = @(Get-WorkdayWorkerEmail -WorkerXml $x.OuterXml)
                 $o.NationalId = @(Get-WorkdayWorkerNationalId -WorkerXml $x.OuterXml)
                 $o.OtherId = @(Get-WorkdayWorkerOtherId -WorkerXml $x.OuterXml)
-                $o.ProvisioningGroup =@(Get-WorkdayWorkerProvData -WorkerXml $x.OuterXml)
+                $o.ProvisioningGroup = @(Get-WorkdayWorkerProvData -WorkerXml $x.OuterXml)
+                $o.MgmtData = @(Get-WorkdayWorkerMgmtData -WorkerXml $x.OuterXml)
                 $o.UserId  = $x.Worker_Data.User_ID
 
 

@@ -1,10 +1,10 @@
-﻿function Get-WorkdayWorkerProvData {
+﻿function Get-WorkdayWorkerMgmtData {
 <#
 .SYNOPSIS
-    Returns a Worker's Provisioning Data information.
+    Returns a Worker's Management Heirarchy Data.
 
 .DESCRIPTION
-    Returns a Worker's Provisioning Data information as custom Powershell objects.
+    Returns a Worker's Management Heirarchy Data as custom Powershell objects.
 
 .PARAMETER WorkerId
     The Worker's Id at Workday.
@@ -27,14 +27,18 @@
 
 .EXAMPLE
     
-Get-WorkdayWorkerProvData -WorkerId 123
+Get-WorkdayWorkerMgmtData -WorkerId 123
 
-Provisioning_Group Status   Last_Changed
------------------- ------   ------------
-Office 365 (email) Assigned 2017-05-01T04:23:27.578-07:00
-Active Directory   Assigned 2017-05-01T04:30:30.233-07:00
-            
+Manager_WID                      Manager_EmployeeID Manager_DisplayName
+-----------                      ------------------ -------------------
+1082dd20469510feea15e972925a949e 861426             Bob Jane         
+1082dd20469510feea15e972925a949e 861426             Bob Jane         
+1082dd20469510feea4b229da03631bc 291437             Les Smith       
+1082dd20469510feea4fd9f697f96463 421019             Jan Wilson         
+1082dd20469510feea5b3113bb0587be 423506             Nick O'Dwyer  
+1082dd20469510feeab2c2e4c80c9044 551693             Pete Jackson             
 
+. NOTE: The Top of the Org reports to themself
 #>
 
 	[CmdletBinding(DefaultParametersetName='Search')]
@@ -70,18 +74,17 @@ Active Directory   Assigned 2017-05-01T04:30:30.233-07:00
         return
     }
 
-    $provTemplate = [pscustomobject][ordered]@{       
-        Provisioning_Group = $null
-        Status = $null
-        Last_Changed = $null        
+    $mgmtTemplate = [pscustomobject][ordered]@{       
+        Manager_WID = $null
+        Manager_EmployeeID = $null
+        Manager_DisplayName = $null        
     }
 
-    $WorkerXml.GetElementsByTagName('wd:Provisioning_Group_Assignment_Data') | ForEach-Object {
-        $o = $provTemplate.PsObject.Copy()
-        $o.Provisioning_Group = $_.Provisioning_Group
-        $o.Status = $_.Status
-        $o.Last_Changed = try{ Get-Date $_.Last_Changed -ErrorAction Stop } catch {}
-        Write-Output $o
+    $WorkerXml.Worker.Worker_Data.Management_Chain_Data.Worker_Supervisory_Management_Chain_Data.Management_Chain_Data.Manager | ForEach-Object {
+        $o = $mgmtTemplate.PsObject.Copy()
+        $o.Manager_WID = $_.Worker_Reference.ID | Where-Object {$_.type -eq 'WID'} | Select-Object -ExpandProperty '#text' -Unique 
+        $o.Manager_EmployeeID = $_.Worker_Reference.ID | Where-Object {$_.type -eq 'Employee_ID'} | Select-Object -ExpandProperty '#text'
+        $o.Manager_DisplayName = $_.Worker_Descriptor
+        Write-Output $o         
     }
-
 }
