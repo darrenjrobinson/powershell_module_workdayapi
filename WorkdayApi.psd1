@@ -17,6 +17,7 @@ FunctionsToExport = @(
         'Invoke-WorkdayRequest',
         'Remove-WorkdayConfiguration',
 		'Set-WorkdayWorkerPhoto',
+        'Get-WorkdayWorkerPhoto',
 
         'Get-WorkdayEndpoint',
         'Set-WorkdayCredential',

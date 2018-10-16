@@ -97,6 +97,10 @@ function ConvertFrom-WorkdayWorkerXml {
                 }
                 
                 Write-Output $o
+
+                if ($global:photo -and $global:PhotoPathOut) {
+                    Get-WorkdayWorkerPhoto -WorkerId $referenceId.'#text' -WorkerType $referenceId.type -PhotoPath $global:PhotoPathOut                                       
+                }
             }
         }
     }
