@@ -89,38 +89,39 @@ Get-WorkdayWorkerAdv -WorkerType WID -IncludePersonal -FromDate '2018-07-23T16:3
     process {
         $request = [xml]@'
 <bsvc:Get_Workers_Request bsvc:version="v30.0" xmlns:bsvc="urn:com.workday/bsvc">
-  <bsvc:Request_References bsvc:Skip_Non_Existing_Instances="false">
-	<bsvc:Worker_Reference>
-		<bsvc:ID bsvc:type="Employee_ID">?EmployeeId?</bsvc:ID>
-	</bsvc:Worker_Reference>
-  </bsvc:Request_References>
-  <bsvc:Response_Filter>
-    <bsvc:Page>Page</bsvc:Page>    
-  </bsvc:Response_Filter>
-  <bsvc:Request_Criteria>
-    <bsvc:Exclude_Inactive_Workers>true</bsvc:Exclude_Inactive_Workers>
-    <bsvc:Transaction_Log_Criteria_Data>
-     <bsvc:Transaction_Date_Range_Data>
-      <bsvc:Updated_From></bsvc:Updated_From>
-      <bsvc:Updated_Through></bsvc:Updated_Through>
-     </bsvc:Transaction_Date_Range_Data>
-    </bsvc:Transaction_Log_Criteria_Data>
-  </bsvc:Request_Criteria>
-  <bsvc:Response_Group>
-    <bsvc:Include_Reference>true</bsvc:Include_Reference>
-    <bsvc:Include_Personal_Information>false</bsvc:Include_Personal_Information>
-    <bsvc:Include_Employment_Information>false</bsvc:Include_Employment_Information>
-    <bsvc:Include_Compensation>false</bsvc:Include_Compensation>
-    <bsvc:Include_Organizations>false</bsvc:Include_Organizations>
-    <bsvc:Include_Roles>true</bsvc:Include_Roles>
-    <bsvc:Include_Related_Persons>true</bsvc:Include_Related_Persons>
-    <bsvc:Include_Employee_Contract_Data>true</bsvc:Include_Employee_Contract_Data>
-    <bsvc:Include_Account_Provisioning>false</bsvc:Include_Account_Provisioning>
-    <bsvc:Include_User_Account>false</bsvc:Include_User_Account>    
-    <bsvc:Include_Worker_Documents>false</bsvc:Include_Worker_Documents>  
-    <bsvc:Include_Management_Chain_Data>false</bsvc:Include_Management_Chain_Data>  
-    <bsvc:Include_Photo>false</bsvc:Include_Photo>                             
-  </bsvc:Response_Group>
+    <bsvc:Request_References bsvc:Skip_Non_Existing_Instances="false">
+        <bsvc:Worker_Reference>
+            <bsvc:ID bsvc:type="Employee_ID">?EmployeeId?</bsvc:ID>
+        </bsvc:Worker_Reference>
+    </bsvc:Request_References>
+    <bsvc:Response_Filter>
+        <bsvc:Page>Page</bsvc:Page>    
+    </bsvc:Response_Filter>
+    <bsvc:Request_Criteria>
+        <bsvc:Exclude_Inactive_Workers>true</bsvc:Exclude_Inactive_Workers>
+        <bsvc:Transaction_Log_Criteria_Data>
+            <bsvc:Transaction_Date_Range_Data>
+                <bsvc:Updated_From></bsvc:Updated_From>
+                <bsvc:Updated_Through></bsvc:Updated_Through>
+            </bsvc:Transaction_Date_Range_Data>
+        </bsvc:Transaction_Log_Criteria_Data>
+    </bsvc:Request_Criteria>
+    <bsvc:Response_Group>
+        <bsvc:Include_Reference>true</bsvc:Include_Reference>
+        <bsvc:Include_Personal_Information>false</bsvc:Include_Personal_Information>
+        <bsvc:Include_Employment_Information>false</bsvc:Include_Employment_Information>
+        <bsvc:Include_Compensation>false</bsvc:Include_Compensation>
+        <bsvc:Include_Organizations>false</bsvc:Include_Organizations>
+        <bsvc:Include_Roles>true</bsvc:Include_Roles>
+        <bsvc:Include_Related_Persons>true</bsvc:Include_Related_Persons>
+        <bsvc:Include_Employee_Contract_Data>true</bsvc:Include_Employee_Contract_Data>
+        <bsvc:Include_Account_Provisioning>false</bsvc:Include_Account_Provisioning>
+        <bsvc:Include_User_Account>false</bsvc:Include_User_Account> 
+        <bsvc:Include_Background_Check_Data>true</bsvc:Include_Background_Check_Data>     
+        <bsvc:Include_Worker_Documents>false</bsvc:Include_Worker_Documents>  
+        <bsvc:Include_Management_Chain_Data>false</bsvc:Include_Management_Chain_Data>  
+        <bsvc:Include_Photo>false</bsvc:Include_Photo>                             
+    </bsvc:Response_Group>
 </bsvc:Get_Workers_Request>
 '@
 
@@ -147,17 +148,18 @@ Get-WorkdayWorkerAdv -WorkerType WID -IncludePersonal -FromDate '2018-07-23T16:3
             $request.Get_Workers_Request.Response_Group.Include_Compensation = 'true'
             $request.Get_Workers_Request.Response_Group.Include_Organizations = 'true'
             $request.Get_Workers_Request.Response_Group.Include_Roles = 'true'
-            $request.Get_Workers_Request.Response_Group.Include_Account_Provisioning ='true'
-            $request.Get_Workers_Request.Response_Group.Include_Management_Chain_Data ='true'
+            $request.Get_Workers_Request.Response_Group.Include_Account_Provisioning = 'true'
+            $request.Get_Workers_Request.Response_Group.Include_Management_Chain_Data = 'true'
         }
 
         if ($IncludePhoto) {           
-            $request.Get_Workers_Request.Response_Group.Include_Photo ='true'             
-            if ($PhotoPath -eq $null){                 
+            $request.Get_Workers_Request.Response_Group.Include_Photo = 'true'             
+            if ($PhotoPath -eq $null) {                 
                 [boolean]$global:photo = $false 
                 Write-Warning 'Unable to output Photo. Use -PhotoPath to specify output location.'
                 break
-            } else {
+            }
+            else {
                 [boolean]$global:photo = $true 
                 $global:PhotoPathOut = $PhotoPath
             }
@@ -184,7 +186,7 @@ Get-WorkdayWorkerAdv -WorkerType WID -IncludePersonal -FromDate '2018-07-23T16:3
         if ($Force) {
             $request.Get_Workers_Request.Request_Criteria.Exclude_Inactive_Workers = 'false'
         }
-       
+
         $more = $true
         $nextPage = 0
         while ($more) {
